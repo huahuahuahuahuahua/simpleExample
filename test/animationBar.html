@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--ignore-->
+    <title>Document</title>
+    <style>
+      .主容器 {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      .线条容器 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 150vh;
+        height: 150vh;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: stretch;
+        transform: translate3d(-50%, -50%, 0) rotate(-135deg);
+      }
+      .线条 {
+        flex: 1 1 auto;
+        width: 150vh;
+        height: 150vh;
+        border-radius: inherit;
+        animation: rainbow-in  1s ease 1s 1 forwards;
+        transform: translateY(-100%);
+      }
+      .in .线条 {
+        animation: rainbow-in  1s ease 1s 1 forwards;
+        transform: translateY(-100%);
+      }
+      .out .线条 {
+        animation: rainbow-out 1s ease 1s 1 forwards;
+        transform: translateY(0%);
+      }
+      @keyframes rainbow-in {
+        0% {
+          transform: translateY(-100%);
+        }
+        100% {
+          transform: translateY(0%);
+        }
+      }
+      @keyframes rainbow-out {
+        0% {
+          transform: translateY(0%);
+        }
+        100% {
+          transform: translateY(100%);
+        }
+      }
+      @media all and (min-aspect-ratio: 1/1) {
+        .线条容器 {
+          width: 150vw;
+          height: 150vw;
+        }
+      }
+      @keyframes rainbow {
+        0% {
+          transform: translateY(-100%);
+        }
+        100% {
+          transform: translateY(0%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="主容器">
+      <div class="线条容器">
+          <div
+            class="线条"
+            style="
+              background-color: aquamarine;
+              animation-duration: 2s;
+              animation-delay: 0.1s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(118, 157, 214);
+              animation-duration: 3s;
+              animation-delay: 0.2s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(163, 225, 185);
+              animation-duration: 1.2s;
+              animation-delay: 0s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(208, 146, 133);
+              animation-duration: 1.2s;
+              animation-delay: 0s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(198, 110, 209);
+              animation-duration: 3s;
+              animation-delay: 0.2s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: aquamarine;
+              animation-duration: 2s;
+              animation-delay: 0.1s;
+            "
+          ></div>
+ <div
+            class="线条"
+            style="
+              background-color: rgb(222, 233, 171);
+              animation-duration: 2s;
+              animation-delay: 0.1s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(118, 157, 214);
+              animation-duration: 3s;
+              animation-delay: 0.2s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(163, 225, 185);
+              animation-duration: 1.2s;
+              animation-delay: 0s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(208, 146, 133);
+              animation-duration: 1.2s;
+              animation-delay: 0s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(198, 110, 209);
+              animation-duration: 3s;
+              animation-delay: 0.2s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: aquamarine;
+              animation-duration: 2s;
+              animation-delay: 0.1s;
+            "
+          ></div>
+        </div>
+        <!-- 
+        <div class="out">
+          <div
+            class="线条"
+            style="
+              background-color: aquamarine;
+              animation-duration: 2s;
+              animation-delay: 0.1s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(47, 86, 145);
+              animation-duration: 3s;
+              animation-delay: 0.2s;
+            "
+          ></div>
+          <div
+            class="线条"
+            style="
+              background-color: rgb(143, 137, 49);
+              animation-duration: 1.2s;
+              animation-delay: 0s;
+            "
+          ></div>
+        </div> -->
+      </div>
+    </div>
+  </body>
+  <script>
+  
+      document.querySelector(".线条").style.webkitAnimationName = "rainbow-out";
+    let 线条容器=document.querySelector(".线条容器")
+    let inEndCount = 0;
+    let outEndCount = 0;
+    let lineCount= 0
+    线条容器.addEventListener("animationend", (e) => {
+if (e.animationName === "rainbow-in") {
+    console.log("rainbow-in")
+    const rainbow = getkeyframes('rainbow-in');
+    rainbow.styleSheet.deleteRule(animation.index);
+    const runkeyframes =`@keyframes rainbow-out {
+        0% {
+          transform: translateY(0%);
+        }
+        100% {
+          transform: translateY(100%);
+        }
+      }`
+      rainbow.styleSheet.insertRule(runkeyframes, animation.index);
+        inEndCount++;
+        if (inEndCount === lineCount) {
+        }
+      }
+      if (e.animationName === "rainbow-out") {
+        outEndCount++;
+        if (outEndCount === lineCount) {
+        }
+      }
+    });
+          getkeyframes=(name)=> {
+    var animation = {};
+    // 获取所有的style
+    var ss = document.styleSheets;
+    for (var i = 0; i < ss.length; ++i) {
+      const item = ss[i];
+      if (item.cssRules[0] && item.cssRules[0].name && item.cssRules[0].name === name) {
+        animation.cssRule = item.cssRules[0];
+        animation.styleSheet = ss[i];
+        animation.index = 0;
+      }
+    }
+    return animation;
+  }
+
+  </script>
+</html>

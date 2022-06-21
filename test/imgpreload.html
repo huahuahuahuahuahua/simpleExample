@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>imgpreload</title>
+</head>
+<body>
+    <div style="position:relative">
+      <div 
+      class="isok"
+      style="position:absolute;top:400px">1111</div>
+      <img 
+      src="https://internal-amis-res.cdn.bcebos.com/images/2020-1/1578395692722/4f3cb4202335.jpeg@s_0,w_216,l_1,f_jpg,q_80">
+    </img>
+    </div>
+
+
+</body>
+<script>
+
+  //记录当前时间戳
+var start_time = new Date().getTime()
+// 图片地址 后面加时间戳是为了避免缓存
+var img_url = 'http://b.zol-img.com.cn/desk/bizhi/image/2/2560x1600/1365477614755.jpg?'+start_time
+// 创建对象
+var img = new Image()
+// 改变图片的src
+img.src = img_url
+// 定时执行获取宽高
+var check = function(){
+ // 只要任何一方大于0
+ // 表示已经服务器已经返回宽高
+    if (img.width>0 || img.height>0) {
+        var diff = new Date().getTime() - start_time;
+        document.body.innerHTML += 'from:check : width:'+img.width+',height:'+img.height+', time:'+diff+'ms';
+        clearInterval(set);
+    }
+}
+var set = setInterval(check,40)
+  // 加载完成获取宽高
+img.onload =  function (){
+    var diff = new Date().getTime() - start_time;
+    document.body.innerHTML += 'from:onload : width:'+img.width+',height:'+img.height+', time:'+diff+'ms';
+    const div = document.getElementsByClassName("isok")[0]
+    console.log("div",div.clientWidth,div.clientHeight)
+    img.style.width="100px"
+    img.style.height="200px"
+    div.appendChild(img)
+};
+
+
+
+
+
+// setTimeout(() => {
+    // const img = document.getElementsByTagName("img")[0]
+
+// }, 1000);
+ 
+
+</script>
+</html>

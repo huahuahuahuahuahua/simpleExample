@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title></title>
+    <script src="jsQR.js"></script>
+</head>
+
+<body>
+    <h3>Hello {{uname}}</h3>
+    <div>
+        <canvas id="canvas"></canvas>
+        <input id="cameraInput" type="file" accept="image/*" capture="camera">
+        <div id="outputMessage" style="width:200px;font-size:10px"></div>
+    </div>
+    </div>
+    <br />
+    <br />
+    </body>
+    <script>
+        const cameraInput = document.getElementById("cameraInput")
+        const outputMessage = document.getElementById("outputMessage");
+        const canvasElement = document.getElementById("canvas");
+        const canvas = canvasElement.getContext("2d");
+        canvasElement.height = 500;
+        canvasElement.width = 400;
+        cameraInput.onchange = function () {
+            if (this.files.length != 1) return;
+            let file = this.files[0];
+            let url = URL.createObjectURL(file);
+            let cameraShow = new Image();
+            cameraShow.onload=function () {
+                canvas.drawImage(this,0,0,canvasElement.width)
+                // 返回 ImageData 对象，该对象拷贝了画布指定矩形的像素数据
+                let imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                // 让浏览器知道不用在内存中继续保留对这个文件的引用了。
+                URL.revokeObjectURL(this.src)
+                const code = jsQR(imageData.data,imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert",
+                })
+                if (code) {
+                    // outputMessage.innerHTML = `扫描结果：<a href="${code.data}">${code.data}</a>`;
+                    window.location.href = code.data;
+                } else {
+                    outputMessage.innerHTML = "无扫描结果";
+                }
+            }
+            cameraShow.src = url;
+        }
+    </script>
+
+
+
+</html>

@@ -1,0 +1,116 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .login_box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -190px;
+            margin-top: -270px;
+            border-radius: 4px;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            background-color: #fff;
+            width: 380px;
+            height: 440px;
+            box-shadow: 0 2px 10px #999;
+            -moz-box-shadow: #999 0 2px 10px;
+            -webkit-box-shadow: #999 0 2px 10px;
+        }
+
+        .qrcode .img {
+            display: block;
+            width: 270px;
+            height: 270px;
+            margin: 42px auto 12px;
+        }
+
+        .login_box .qrcode .sub_title {
+            text-align: center;
+            font-size: 20px;
+            color: #353535;
+            margin-bottom: 23px;
+        }
+    </style>
+</head>
+
+<body style="background-color: #efefef;">
+    <div class="login_box">
+        <div class="qrcode">
+            <img id="qrcode_img" class="img"
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAAB0CAYAAABUmhYnAAAAAklEQVR4AewaftIAAAI/SURBVO3BQW4gMQwDwaYw//8y96yLAcOeSaJlFRERERERERERERERERERQ4ljNp+SuMqmkWhsPiVxoIhRihiliFEerpO4ymaLzRaJLRJX2VxUxChFjFLEKA+vs9kiscVmi8RVNlskXlTEKEWMUsQoD/8dm0ZikCJGKWKUIkZ5GEeisWkkGptG4g8rYpQiRililIfXSXzKppFobBqJIxK/SBGjFDFKEaM8XGfzoyQam0aisWkklmx+sSJGKWKUIkZ5OCbxp0ksSfwhRYxSxChFjCKO2TQSjc1VEks2WySWbK6SeFERoxQxShGjiNfZLElssVmSaGyukliyaSQ+VMQoRYxSxCjiOptGorFZkmhsGomrbBqJxmZJ4hcpYpQiRiliFHGdzRGJLTaNxJLNEYklm0biQ0WMUsQoRYwirrPZIrFk00g0NksSSzaNxJJNI7Fk00g0No3EgSJGKWKUIkZ5uE7iKonRJC4qYpQiRiliFHHM5lMSSzZbJBqbRmLJ5iqJA0WMUsQoRYzycJ3EVTZLNlskliSWbJYkGptG4kVFjFLEKEWM8vA6my0SRyQam8amkWhsGolGorFpbH5QEaMUMUoRozyMJ9HYNDZLNo1EI9HYNBIfKmKUIkYpYpSHcWyWJBqbRqKxaWwaiUbiBxUxShGjFDGKOGbTSFxl00hssblKYsmmkViyaSQOFDFKEaMUMYo4ZvMpicZmi0Rj00gs2TQSSzaNxIuKGKWIUYqIiIiIiIiIiIiIiIiIiIg/4B8hhpTIYZApPQAAAABJRU5ErkJggg==" />
+            <div>
+                <p id="msg" class="sub_title">使用手机扫码登录</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const qrcode_img = document.getElementById("qrcode_img");
+        const msg = document.getElementById("msg");
+        function getQrcodeData() {
+            return fetch("/qrcode", {
+                method: "POST",
+                credentials: 'include'
+            }).then(v => v.json());
+        }
+        function getQrcodeImg(token) {
+            return fetch("/qrcode/img/" + token, { credentials: 'include', method: "POST" }).then().then(v => v.text());
+        }
+        function getScanInfo(token) {
+            return fetch("/qrcode/scan_info/" + token, { credentials: 'include', method: "POST" }).then().then(v => v.json());
+        }
+        (async function () {
+            let qrcode = await getQrcodeData();
+            let imgDataUrl = await getQrcodeImg(qrcode.token);
+            qrcode_img.src = imgDataUrl;
+            let timer = setInterval(async function () {
+                if (qrcode.expires_at < (+new Date())) {
+                    msg.innerHTML = "二维码过期,请刷新网页";
+                    qrcode_img.style.opacity = "0";
+                    clearInterval(timer);
+                } else {
+                    let scanInfo = null;
+                    try {
+                        scanInfo = await getScanInfo(qrcode.token);
+                    } catch (error) {
+                        scanInfo = { status: -1 };
+                    }
+                    let clearTimer = false;
+                    if (scanInfo.status == -1) {
+                        clearTimer = true;
+                        qrcode_img.style.opacity = "0";
+                        msg.innerHTML = "登陆状态错误,请刷新网页";
+                    } else if (scanInfo.status == 0) {
+                        // console.log(scanInfo);
+                    } else if (scanInfo.status == 1) {
+                        qrcode.expires_at = scanInfo.expires_at;
+                        qrcode_img.style.opacity = "0.4";
+                        msg.innerHTML = "已扫描等待确定";
+                    } else if (scanInfo.status == 2) {
+                        //移动端确定
+                        qrcode_img.style.opacity = "0.3";
+                        window.location.href = "/";
+                    } else if (scanInfo.status == 3) {
+                        clearTimer = true;
+                        qrcode_img.style.opacity = "0";
+                        msg.innerHTML = "移动端确定超时,请刷新网页";
+                    } else if (scanInfo.status == 4) {
+                        clearTimer = true;
+                        qrcode_img.style.opacity = "0";
+                        msg.innerHTML = "二维码过期,请刷新网页";
+                    } else if (scanInfo.status == 5) {
+                        clearTimer = true;
+                        qrcode_img.style.opacity = "0";
+                        msg.innerHTML = "拒绝";
+                    }
+                    if (clearTimer) clearInterval(timer);
+                }
+            }, 1000);
+        })();
+
+    </script>
+</body>
+
+</html>
