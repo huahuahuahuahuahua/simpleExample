@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      .main {
+        height: 100vh;
+        width: 100vw;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .main .left,
+      .main .right {
+        position: relative;
+        height: 100%;
+        width: 49%;
+        border: 1px solid #66ccff;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="./createWatermark.js"></script>
+    <div class="main">
+      <div class="left watermarked"></div>
+      <div class="right"></div>
+    </div>
+  </body>
+  <script>
+    const option = {
+      content: "张坚泉",
+      className: "watermarked",
+    };
+    genWaterMark(option);
+  </script>
+</html>
