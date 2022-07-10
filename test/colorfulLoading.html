@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>colorfulLoading</title>
+  </head>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgb(252, 252, 252);
+    }
+
+    .loading {
+      --h: 5rem;
+      width: calc(var(--h) * 2);
+      height: var(--h);
+      border-radius: 50% 50% 0 0/100% 100% 0 0;
+      background: linear-gradient(to right, transparent, cyan);
+      position: relative;
+      transform-origin: center bottom;
+      animation: _animate 2s linear infinite;
+    }
+
+    .loading::before {
+      content: "";
+      width: 80%;
+      height: 80%;
+      position: absolute;
+      left: 5%;
+      bottom: 0;
+      border-radius: 50% 50% 0 0/100% 100% 0 0;
+      background: rgb(255, 255, 255);
+    }
+
+    .loading::after {
+      content: "";
+      width: 15%;
+      height: 30%;
+      border-radius: 50%;
+      background: cyan;
+      position: absolute;
+      right: 0;
+      bottom: -15%;
+      box-shadow: 0 0 0.2rem #000 inset;
+    }
+
+    @keyframes _animate {
+      100% {
+        filter: hue-rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <body>
+    <div class="loading"></div>
+  </body>
+</html>
